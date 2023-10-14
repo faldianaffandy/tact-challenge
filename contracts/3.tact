@@ -37,7 +37,6 @@ contract Task3 with Deployable {
   receive(msg: JettonNotification) {
   } 
   
-  // Define the return type as Int
   pub fun price(jetton: Address): Int { 
     // Implement the logic to calculate the price
     if jetton == self.jettonAddressA {
@@ -49,7 +48,6 @@ contract Task3 with Deployable {
     }
   }
   
-  // Define the return type as Int
   pub fun balance(jetton: Address): Int { 
     // Implement the logic to return the balance of the specified jetton
     if jetton == self.jettonAddressA {
