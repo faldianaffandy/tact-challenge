@@ -1,31 +1,39 @@
-pub contract Task1 {
+import "@stdlib/deploy";
 
-    // Define a variable to store the counter
-    pub var counter: Int
+/*
+ TASK 1 - Counter 
+ Implement a counter contract that will have 2 opcodes ('Add' / 'Subtract'),
+ which adds or subtracts the received number (int32) from the number that is stored in the state (and stores the result back in the state).
+ You also need to implement one getter with the name "counter" to get the current number from the state.
+*/
 
-    // Initialize the counter to 0 in the constructor
-    init() {
-        self.counter = 0
-    }
-
-    // Implement the 'Add' operation to increase the counter
-    pub fun add(number: Int) {
-        pre {
-            number > 0: "Number must be positive"
-        }
-        self.counter = self.counter + number
-    }
-
-    // Implement the 'Subtract' operation to decrease the counter
-    pub fun subtract(number: Int) {
-        pre {
-            number > 0: "Number must be positive"
-        }
-        self.counter = self.counter - number
-    }
-
-    // Implement a getter to retrieve the current counter value
-    pub fun getCounter(): Int {
-        return self.counter
-    }
+message Add {
+ queryId: Int as uint64;
+ number: Int as uint32;
 }
+
+message Subtract {
+ queryId: Int as uint64;
+ number: Int as uint32;
+}
+
+contract Task1 with Deployable {
+  counter: Int as int32;
+
+init() {
+   self.counter = 0;
+  }
+
+receive(msg: Add) {
+self.counter += msg.number;
+}
+
+receive(msg: Subtract) {
+self.counter -= msg.number;
+}
+
+get fun counter(): Int {
+return self.counter;
+}
+}
+
