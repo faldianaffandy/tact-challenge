@@ -21,7 +21,7 @@ contract Task1 with Deployable {
  counter: Int as int32;
 
  init() {
-  **// Initialize the counter to 0**
+  // Initialize the counter to 0
   self.counter <- 0;
  }
 
