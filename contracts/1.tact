@@ -18,27 +18,24 @@ message Subtract {
 }
 
 contract Task1 with Deployable {
-    counter: Int as int32;
+    pub var counter: Int
 
     init() {
-      self.counter = 0;
+        self.counter = 0
     }
 
     // Opcode 'Add' implementation
-    receive(msg: Add) {
-        // Add 'number' to the current 'counter' value
-        self.counter = self.counter + msg.number;
+    pub fun addNumber(_ number: Int) {
+        self.counter = self.counter + number
     }
-    
+
     // Opcode 'Subtract' implementation
-    receive(msg: Subtract) {
-        // Subtract 'number' from the current 'counter' value
-        self.counter = self.counter - msg.number;
+    pub fun subtractNumber(_ number: Int) {
+        self.counter = self.counter - number
     }
 
     // Getter for 'counter' value
-    pub fun counter(): Int {
-        // Return the current 'counter' value from the state
-        return self.counter;
+    pub fun getCounter(): Int {
+        return self.counter
     }
 }
