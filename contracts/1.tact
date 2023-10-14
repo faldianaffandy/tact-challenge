@@ -27,18 +27,18 @@ contract Task1 with Deployable {
     // Opcode 'Add' implementation
     receive(msg: Add) {
         // Add 'number' to the current 'counter' value
-        self.counter += msg.number;
+        self.counter = self.counter + msg.number;
     }
     
     // Opcode 'Subtract' implementation
     receive(msg: Subtract) {
         // Subtract 'number' from the current 'counter' value
-        self.counter -= msg.number;
+        self.counter = self.counter - msg.number;
     }
 
     // Getter for 'counter' value
-    get fun counter(): Int {
-        // Return the current 'counter' value from the status
+    pub fun counter(): Int {
+        // Return the current 'counter' value from the state
         return self.counter;
     }
 }
