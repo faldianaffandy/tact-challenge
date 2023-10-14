@@ -1,18 +1,5 @@
 import "@stdlib/deploy";
 
-/*
-  TASK 2 - Proxy 
-  Create a contract that forwards all received TONs
-  to the admin contract (whose address is set in init_store).
-  Message from this proxy contract to the admin contract should contain:
-    - Address of user who sent original message (should be stored in the outcoming body's data/bits)
-    - Original message that proxy smart contract received from user (should be stored in the outcoming body's first ref)
-  Also, if admin contract decides to reject message (if it sends to the proxy "Refund" message with opcode=0x44),
-  proxy contract needs to forward all TONs (attached to Refund message) back to the user.
-  User address will be provided in Refund message body as "sender".
-  In refund transaction, it is important to have a check that the refund message came from the admin address
-*/
-
 message(0x44) Refund {
   queryId: Int as uint64;
   sender: Address;
@@ -24,10 +11,31 @@ contract Task2 with Deployable {
   init(admin: Address) {
     self.admin = admin;
   }
-  
-  receive(msg: Refund) {
+
+  // This function is called when a user sends TONs to this contract.
+  receive() {
+    // Make sure there are TONs attached to the message.
+    assert(msg.value > 0, 101);
+
+    // Record the user's address and the original message in the storage.
+    storage[msg.sender] = msg;
+    
+    // Forward the received TONs to the admin contract.
+    send(self.admin, msg.value, msg.data);
   }
 
-  receive(msg: Slice) {
+  // This function is called when the admin contract decides to refund TONs to a user.
+  receive(msg: Refund) {
+    // Ensure that the refund message is coming from the admin address.
+    require(msg.sender == self.admin, 102);
+
+    // Get the original message from the storage.
+    let originalMessage = storage[msg.queryId];
+
+    // Forward the TONs back to the user who initiated the original message.
+    send(originalMessage.sender, msg.value, originalMessage.data);
+
+    // Clean up the storage after the refund is processed.
+    storage[msg.queryId] = null;
   }
 }
